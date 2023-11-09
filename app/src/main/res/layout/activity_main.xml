@@ -57,14 +57,28 @@
 
     <Button
         android:id="@+id/connectarButton"
-        android:layout_width="196dp"
-        android:layout_height="67dp"
+        android:layout_width="168dp"
+        android:layout_height="63dp"
         android:layout_marginTop="56dp"
         android:backgroundTint="#007BFF"
         android:text="CONNECTAR"
-        android:textSize="24sp"
+        android:textSize="20sp"
         android:textStyle="bold"
-        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/enviarButton"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/ipEditText" />
+
+    <Button
+        android:id="@+id/enviarButton"
+        android:layout_width="168dp"
+        android:layout_height="63dp"
+        android:layout_marginTop="56dp"
+        android:backgroundTint="#FF0000"
+        android:text="ENVIAR"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/connectarButton"
+        app:layout_constraintTop_toBottomOf="@+id/ipEditText" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>
