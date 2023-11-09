@@ -2,6 +2,7 @@ package com.example.pantayator;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.graphics.Color;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -16,6 +17,9 @@ import org.java_websocket.drafts.Draft_6455;
 import org.java_websocket.handshake.ServerHandshake;
 
 public class MainActivity extends AppCompatActivity {
+
+    private Button sendButton;
+    private final String[] connectionStatus = {"DISCONNECTED"}; // Posibles status:  "DISCONNECTED", "CONNECTED"
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,6 +37,22 @@ public class MainActivity extends AppCompatActivity {
                 connectToRPI(ip);
             }
         });
+
+        sendButton = findViewById(R.id.enviarButton);
+        sendButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (connectionStatus.equals("DISCONECTED")){
+                    return;
+                }
+
+                // Obtén el mensaje del EditText
+                String message = msgET.getText().toString();
+
+                // Aquí puedes agregar la lógica para enviar el mensaje a través del WebSocket
+                sendMessageToServer(message);
+            }
+        });
     }
 
     public void connectToRPI(String ip) {
@@ -46,6 +66,14 @@ public class MainActivity extends AppCompatActivity {
                 @Override
                 public void onOpen(ServerHandshake handshake) {
                     System.out.println("Connected to: " + getURI());
+                    connectionStatus[0] = "CONNECTED";
+                    // Cambiar el color del botón de enviar cuando te conectas
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            sendButton.setBackgroundColor(Color.GREEN);
+                        }
+                    });
                 }
 
                 @Override
@@ -56,10 +84,19 @@ public class MainActivity extends AppCompatActivity {
                 @Override
                 public void onClose(int code, String reason, boolean remote) {
                     System.out.println("Disconnected from: " + getURI());
+                    connectionStatus[0] = "DISCONNECTED";
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            sendButton.setBackgroundColor(Color.RED);
+                        }
+                    });
                 }
 
                 @Override
-                public void onError(Exception ex) { ex.printStackTrace(); }
+                public void onError(Exception ex) {
+                    ex.printStackTrace();
+                }
             };
             client.connect();
             client.send("{\"type\":\"connection\", \"version\": \"app\"}");
@@ -67,6 +104,5 @@ public class MainActivity extends AppCompatActivity {
             e.printStackTrace();
             System.out.println("Error: " + uri + " no és una direcció URI de WebSocket vàlida");
         }
-
     }
 }
