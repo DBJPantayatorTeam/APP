@@ -20,6 +20,7 @@ public class MainActivity extends AppCompatActivity {
 
     private Button sendButton;
     private final String[] connectionStatus = {"DISCONNECTED"}; // Posibles status:  "DISCONNECTED", "CONNECTED"
+    private WebSocketClient client;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,32 +43,26 @@ public class MainActivity extends AppCompatActivity {
         sendButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (connectionStatus.equals("DISCONECTED")){
+                if (connectionStatus.equals("DISCONNECTED") || client == null) {
                     return;
                 }
 
-                // Obtén el mensaje del EditText
                 String message = msgET.getText().toString();
-
-                // Aquí puedes agregar la lógica para enviar el mensaje a través del WebSocket
-                sendMessageToServer(message);
+                client.send(message);
             }
         });
     }
 
     public void connectToRPI(String ip) {
-
         int port = 8888;
         String uri = "ws://" + ip + ":" + port;
-        WebSocketClient client;
+
         try {
             client = new WebSocketClient(new URI(uri), (Draft) new Draft_6455()) {
-
                 @Override
                 public void onOpen(ServerHandshake handshake) {
                     System.out.println("Connected to: " + getURI());
                     connectionStatus[0] = "CONNECTED";
-                    // Cambiar el color del botón de enviar cuando te conectas
                     runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
@@ -78,12 +73,12 @@ public class MainActivity extends AppCompatActivity {
 
                 @Override
                 public void onMessage(String message) {
-                    System.out.println("Misatge: "+ message);
+                    System.out.println("Mensaje: " + message);
                 }
 
                 @Override
                 public void onClose(int code, String reason, boolean remote) {
-                    System.out.println("Disconnected from: " + getURI());
+                    System.out.println("Desconectado de: " + getURI());
                     connectionStatus[0] = "DISCONNECTED";
                     runOnUiThread(new Runnable() {
                         @Override
@@ -98,11 +93,12 @@ public class MainActivity extends AppCompatActivity {
                     ex.printStackTrace();
                 }
             };
+
             client.connect();
             client.send("{\"type\":\"connection\", \"version\": \"app\"}");
         } catch (URISyntaxException e) {
             e.printStackTrace();
-            System.out.println("Error: " + uri + " no és una direcció URI de WebSocket vàlida");
+            System.out.println("Error: " + uri + " no es una dirección URI de WebSocket válida");
         }
     }
 }
