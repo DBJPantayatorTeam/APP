@@ -6,15 +6,22 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.Toast;
 
+import org.json.JSONArray;
+import org.json.JSONObject;
+
+import java.io.FileOutputStream;
 import java.util.ArrayList;
 import java.util.Collections;
 
 public class MessageHistoryActivity extends AppCompatActivity {
+    private ArrayList<String> reversedMessageHistory;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -29,7 +36,15 @@ public class MessageHistoryActivity extends AppCompatActivity {
             }
         });
 
-        ArrayList<String> reversedMessageHistory = reverseList(messageHistory);
+        final Button saveButton = findViewById(R.id.saveButton);
+        saveButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                saveFile();
+            }
+        });
+
+        reversedMessageHistory = reverseList(messageHistory);
 
         // Utiliza un RecyclerView en lugar de un ListView
         RecyclerView recyclerView = findViewById(R.id.lastMessagesLayout);
@@ -47,6 +62,26 @@ public class MessageHistoryActivity extends AppCompatActivity {
         ArrayList<String> reverseList = new ArrayList<>(originalList);
         Collections.reverse(reverseList);
         return reverseList;
+    }
+
+    private void saveFile() {
+        String fileName = "messageFile.json";
+        try {
+            JSONArray jsonArray = new JSONArray(reversedMessageHistory);
+
+            JSONObject jsonObject = new JSONObject();
+            jsonObject.put("type", "messageList");
+            jsonObject.put("value", jsonArray);
+
+            String jsonString = jsonObject.toString();
+            FileOutputStream fos = openFileOutput(fileName, Context.MODE_PRIVATE);
+            fos.write(jsonString.getBytes());
+            fos.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            Toast.makeText(MessageHistoryActivity.this, "Fitxer desat correctament", Toast.LENGTH_SHORT).show();
+        }
     }
 
     private void goToMain() {
