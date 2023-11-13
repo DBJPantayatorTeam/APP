@@ -41,7 +41,6 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View v) {
                 String ip = String.valueOf(ipET.getText());
                 connectToRPI(ip);
-                historyButton.setVisibility(View.VISIBLE);
             }
         });
 
@@ -56,7 +55,7 @@ public class MainActivity extends AppCompatActivity {
                 String message = msgET.getText().toString();
                 try {
                     if (isWebSocketConnected()) {
-                        client.send(message);
+                        client.send(String.format("{\"type\":\"show\", \"value\": \"%s\"}",message));
                         addMessageToHistory(message);
                     } else {
                         // La conexión no está establecida, muestra un mensaje al usuario.
@@ -107,6 +106,7 @@ public class MainActivity extends AppCompatActivity {
                         @Override
                         public void run() {
                             sendButton.setBackgroundTintList(getColorStateList(R.color.colorVerde));
+                            historyButton.setVisibility(View.VISIBLE);
                         }
                     });
                     client.send("{\"type\":\"connection\", \"version\": \"app\"}");
