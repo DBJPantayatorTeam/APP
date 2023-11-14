@@ -3,4 +3,6 @@
     <color name="colorBlanco">#FFFFFF</color>
     <color name="colorGris">#DADADA</color>
     <color name="colorVerde">#00ff00</color>
+    <color name="colorRojo">#ff0000</color>
+    <color name="colorAzul">#007BFF</color>
 </resources>
