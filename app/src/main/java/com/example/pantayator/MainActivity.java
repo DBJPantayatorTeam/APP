@@ -23,6 +23,7 @@ import org.java_websocket.exceptions.WebsocketNotConnectedException;
 public class MainActivity extends AppCompatActivity {
 
     private Button sendButton;
+    private Button connectButton;
     private WebSocketClient client;
     static ArrayList<String> messageHistory = new ArrayList<String>();
     private Button historyButton;
@@ -35,12 +36,17 @@ public class MainActivity extends AppCompatActivity {
         final EditText msgET = findViewById(R.id.missatgeEditText);
         final EditText ipET = findViewById(R.id.ipEditText);
 
-        final Button connectButton = findViewById(R.id.connectarButton);
+        connectButton = findViewById(R.id.connectarButton);
         connectButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String ip = String.valueOf(ipET.getText());
-                connectToRPI(ip);
+                if (!isConnected()) {
+                    String ip = String.valueOf(ipET.getText());
+                    connectToRPI(ip);
+                } else {
+                    client.close();
+                }
+
             }
         });
 
@@ -48,23 +54,17 @@ public class MainActivity extends AppCompatActivity {
         sendButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (!isWebSocketConnected()) {
+                if (!isConnected()) {
                     return;
                 }
 
                 String message = msgET.getText().toString();
                 try {
-                    if (isWebSocketConnected()) {
-                        client.send(String.format("{\"type\":\"show\", \"value\": \"%s\"}",message));
-                        addMessageToHistory(message);
-                    } else {
-                        // La conexión no está establecida, muestra un mensaje al usuario.
-                        Toast.makeText(MainActivity.this, "La conexión no está establecida", Toast.LENGTH_SHORT).show();
-                    }
+                    client.send(String.format("{\"type\":\"show\", \"value\": \"%s\"}",message));
+                    addMessageToHistory(message);
                 } catch (WebsocketNotConnectedException e) {
                     e.printStackTrace();
-                    // Maneja la excepción de conexión no establecida, por ejemplo, muestra un mensaje al usuario.
-                    Toast.makeText(MainActivity.this, "Error: La conexión no está establecida", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(MainActivity.this, "Error, no s'ha enviat el missatge", Toast.LENGTH_SHORT).show();
                 }
             }
         });
@@ -105,8 +105,11 @@ public class MainActivity extends AppCompatActivity {
                     runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
+                            connectButton.setBackgroundTintList(getColorStateList(R.color.colorRojo));
+                            connectButton.setText("DESCONNECTAR");
                             sendButton.setBackgroundTintList(getColorStateList(R.color.colorVerde));
                             historyButton.setVisibility(View.VISIBLE);
+                            Toast.makeText(MainActivity.this, "S'ha establert la connexió", Toast.LENGTH_SHORT).show();
                         }
                     });
                     client.send("{\"type\":\"connection\", \"version\": \"app\"}");
@@ -114,16 +117,21 @@ public class MainActivity extends AppCompatActivity {
 
                 @Override
                 public void onMessage(String message) {
-                    System.out.println("Mensaje: " + message);
+                    System.out.println("Message: " + message);
+
                 }
 
                 @Override
                 public void onClose(int code, String reason, boolean remote) {
-                    System.out.println("Desconectado de: " + getURI());
+                    System.out.println("Disconnected from: " + getURI());
                     runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
+                            connectButton.setBackgroundTintList(getColorStateList(R.color.colorAzul));
+                            connectButton.setText("CONNECTAR");
                             sendButton.setBackgroundColor(Color.RED);
+                            historyButton.setVisibility(View.INVISIBLE);
+                            Toast.makeText(MainActivity.this, "S'ha desconnectat", Toast.LENGTH_SHORT).show();
                         }
                     });
                 }
@@ -138,6 +146,7 @@ public class MainActivity extends AppCompatActivity {
 
         } catch (URISyntaxException e) {
             e.printStackTrace();
+            Toast.makeText(MainActivity.this, "Error: " + uri + " no es una dirección URI de WebSocket válida", Toast.LENGTH_SHORT).show();
             System.out.println("Error: " + uri + " no es una dirección URI de WebSocket válida");
         }
     }
@@ -147,7 +156,7 @@ public class MainActivity extends AppCompatActivity {
         startActivity(goMH);
     }
 
-    private boolean isWebSocketConnected() {
+    private boolean isConnected() {
         return client != null && client.getConnection().isOpen();
     }
 }
