@@ -19,6 +19,8 @@ import org.java_websocket.drafts.Draft;
 import org.java_websocket.drafts.Draft_6455;
 import org.java_websocket.handshake.ServerHandshake;
 import org.java_websocket.exceptions.WebsocketNotConnectedException;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -118,7 +120,6 @@ public class MainActivity extends AppCompatActivity {
                 @Override
                 public void onMessage(String message) {
                     System.out.println("Message: " + message);
-
                 }
 
                 @Override
