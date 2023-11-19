@@ -7,6 +7,25 @@
     tools:context=".MainActivity">
 
     <Button
+        android:id="@+id/logoutButton"
+        android:layout_width="54dp"
+        android:layout_height="54dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
+        android:backgroundTint="#00FFFFFF"
+        android:paddingLeft="10dp"
+        android:paddingTop="0dp"
+        android:paddingRight="0dp"
+        android:paddingBottom="0dp"
+        app:icon="@android:drawable/ic_menu_close_clear_cancel"
+        app:iconPadding="0dp"
+        app:iconSize="55dp"
+        app:iconTint="#007BFF"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:visibility="visible" />
+
+    <Button
         android:id="@+id/imageButton"
         android:layout_width="54dp"
         android:layout_height="54dp"

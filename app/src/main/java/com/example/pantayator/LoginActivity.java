@@ -38,24 +38,16 @@ public class LoginActivity extends AppCompatActivity {
 
         loginButton = findViewById(R.id.loginButton);
         loginButton.setOnClickListener(new View.OnClickListener(){
-
             @Override
             public void onClick(View view) {
-                client.close();
-                goToMain();
-                //if (!isConnected()){
-                //    return;
-                //}
-//
-                //String password = pswET.getText().toString();
-                //String username = usrET.getText().toString();
-//
-                //try{
-                //    client.send(String.format("{\"type\":\"login\", \"user\": \"%s\", \"password\": \"%s\"}", username, password));
-                //} catch (WebsocketNotConnectedException e) {
-                //    e.printStackTrace();
-                //    Toast.makeText(LoginActivity.this, "Error, no s'ha enviat el missatge", Toast.LENGTH_SHORT).show();
-                //}
+                if (!isConnected()){
+                    return;
+                }
+
+                String password = pswET.getText().toString();
+                String username = usrET.getText().toString();
+
+                client.send(String.format("{\"type\":\"login\", \"user\": \"%s\", \"password\": \"%s\"}", username, password));
             }
         });
     }
@@ -70,7 +62,6 @@ public class LoginActivity extends AppCompatActivity {
                 @Override
                 public void onOpen(ServerHandshake handshake) {
                     System.out.println("Connected to: " + getURI());
-                    //client.send("{\"type\":\"connection\", \"version\": \"app\"}");
                 }
 
                 @Override
@@ -80,14 +71,8 @@ public class LoginActivity extends AppCompatActivity {
                         JSONObject json = new JSONObject(message);
                         String messageType = json.getString("type");
 
-                        switch (messageType) {
-                            case "login":
-                                handleLoginResponse(json);
-                                break;
-                            case "otherMessageType":
-                                // Realizar acciones para otro tipo de mensaje
-                                break;
-                            // Agrega más casos según los tipos de mensajes que esperes
+                        if (messageType.equalsIgnoreCase("login")){
+                            handleLoginResponse(json);
                         }
                     } catch (JSONException e) {
                         e.printStackTrace();
@@ -97,7 +82,6 @@ public class LoginActivity extends AppCompatActivity {
                 @Override
                 public void onClose(int code, String reason, boolean remote) {
                     System.out.println("Disconnected from: " + getURI());
-
                 }
 
                 @Override
@@ -127,12 +111,14 @@ public class LoginActivity extends AppCompatActivity {
         try {
             boolean loginValue = json.getBoolean("value");
             if (loginValue) {
-                // Realizar acciones para el caso de inicio de sesión exitoso
-                client.close();
                 goToMain();
             } else {
-                // Realizar acciones para el caso de inicio de sesión fallido
-                Toast.makeText(LoginActivity.this, "Negativo", Toast.LENGTH_SHORT).show();
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        Toast.makeText(LoginActivity.this, "Usuari o contrasenya incorrecte", Toast.LENGTH_SHORT).show();
+                    }
+                });
             }
         } catch (JSONException e) {
             e.printStackTrace();

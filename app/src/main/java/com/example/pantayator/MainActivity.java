@@ -32,6 +32,7 @@ public class MainActivity extends AppCompatActivity {
     private Button historyButton;
     private Button imageButton;
 
+    private Button logoutButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,11 +50,16 @@ public class MainActivity extends AppCompatActivity {
                     String ip = String.valueOf(ipET.getText());
                     connectToRPI(ip);
                 } else {
-                    //client.close();
                     webSocketManager.getWebSocketClient().close();
                     webSocketManager.deleteWebSocketClient();
-                }
 
+                    connectButton.setBackgroundTintList(getColorStateList(R.color.colorAzul));
+                    connectButton.setText("CONNECTAR");
+                    sendButton.setBackgroundTintList(getColorStateList(R.color.colorRojo));
+                    historyButton.setVisibility(View.INVISIBLE);
+                    imageButton.setVisibility(View.INVISIBLE);
+                    logoutButton.setVisibility(View.VISIBLE);
+                }
             }
         });
 
@@ -67,7 +73,7 @@ public class MainActivity extends AppCompatActivity {
 
                 String message = msgET.getText().toString();
                 try {
-                    client.send(String.format("{\"type\":\"show\", \"value\": \"%s\"}",message));
+                    webSocketManager.getWebSocketClient().send(String.format("{\"type\":\"show\", \"value\": \"%s\"}",message));
                     addMessageToHistory(message);
                 } catch (WebsocketNotConnectedException e) {
                     e.printStackTrace();
@@ -94,14 +100,22 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        logoutButton = findViewById(R.id.logoutButton);
+        logoutButton.setOnClickListener(new View.OnClickListener(){
+
+            @Override
+            public void onClick(View view) {
+                goToLogin();
+            }
+        });
+
         if (webSocketManager.getWebSocketClient() != null) {
-            client = webSocketManager.getWebSocketClient();
             connectButton.setBackgroundTintList(getColorStateList(R.color.colorRojo));
             connectButton.setText("DESCONNECTAR");
             sendButton.setBackgroundTintList(getColorStateList(R.color.colorVerde));
             historyButton.setVisibility(View.VISIBLE);
             imageButton.setVisibility(View.VISIBLE);
-            Toast.makeText(MainActivity.this, "S'ha establert la connexió", Toast.LENGTH_SHORT).show();
+            logoutButton.setVisibility(View.INVISIBLE);
         };
     }
 
@@ -136,6 +150,7 @@ public class MainActivity extends AppCompatActivity {
                             sendButton.setBackgroundTintList(getColorStateList(R.color.colorVerde));
                             historyButton.setVisibility(View.VISIBLE);
                             imageButton.setVisibility(View.VISIBLE);
+                            logoutButton.setVisibility(View.INVISIBLE);
                             Toast.makeText(MainActivity.this, "S'ha establert la connexió", Toast.LENGTH_SHORT).show();
                         }
                     });
@@ -155,9 +170,10 @@ public class MainActivity extends AppCompatActivity {
                         public void run() {
                             connectButton.setBackgroundTintList(getColorStateList(R.color.colorAzul));
                             connectButton.setText("CONNECTAR");
-                            sendButton.setBackgroundColor(Color.RED);
+                            sendButton.setBackgroundTintList(getColorStateList(R.color.colorRojo));
                             historyButton.setVisibility(View.INVISIBLE);
                             imageButton.setVisibility(View.INVISIBLE);
+                            logoutButton.setVisibility(View.VISIBLE);
                             Toast.makeText(MainActivity.this, "S'ha desconnectat", Toast.LENGTH_SHORT).show();
                         }
                     });
@@ -186,6 +202,11 @@ public class MainActivity extends AppCompatActivity {
     private void goToSendImage(){
         Intent goSI = new Intent(getApplicationContext(), ActivitySendImage.class);
         startActivity(goSI);
+    }
+
+    private void goToLogin(){
+        Intent goLg = new Intent(getApplicationContext(), LoginActivity.class);
+        startActivity(goLg);
     }
 
     private boolean isConnected() {
