@@ -27,7 +27,6 @@ public class LoginActivity extends AppCompatActivity {
     private WebSocketClient client;
     private Button loginButton;
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -42,19 +41,21 @@ public class LoginActivity extends AppCompatActivity {
 
             @Override
             public void onClick(View view) {
-                if (!isConnected()){
-                    return;
-                }
-
-                String password = pswET.getText().toString();
-                String username = usrET.getText().toString();
-
-                try{
-                    client.send(String.format("{\"type\":\"login\", \"user\": \"%s\", \"password\": \"%s\"}", username, password));
-                } catch (WebsocketNotConnectedException e) {
-                    e.printStackTrace();
-                    Toast.makeText(LoginActivity.this, "Error, no s'ha enviat el missatge", Toast.LENGTH_SHORT).show();
-                }
+                client.close();
+                goToMain();
+                //if (!isConnected()){
+                //    return;
+                //}
+//
+                //String password = pswET.getText().toString();
+                //String username = usrET.getText().toString();
+//
+                //try{
+                //    client.send(String.format("{\"type\":\"login\", \"user\": \"%s\", \"password\": \"%s\"}", username, password));
+                //} catch (WebsocketNotConnectedException e) {
+                //    e.printStackTrace();
+                //    Toast.makeText(LoginActivity.this, "Error, no s'ha enviat el missatge", Toast.LENGTH_SHORT).show();
+                //}
             }
         });
     }
@@ -115,7 +116,6 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     private void goToMain() {
-        //client.close();
         Intent goMH = new Intent(getApplicationContext(), MainActivity.class);
         startActivity(goMH);
     }

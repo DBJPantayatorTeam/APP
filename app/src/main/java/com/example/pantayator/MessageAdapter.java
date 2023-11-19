@@ -11,11 +11,15 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.recyclerview.widget.RecyclerView;
 
+import org.java_websocket.client.WebSocketClient;
+
 import java.util.ArrayList;
 
 public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHolder> {
 
     private ArrayList<String> messages;
+
+    WebSocketClient client = WebSocketManager.getInstance().getWebSocketClient();
 
     public MessageAdapter(ArrayList<String> messages) {
         this.messages = messages;
@@ -66,6 +70,7 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHold
     }
 
     private void showConfirmationDialog(Context context, String message) {
+
         AlertDialog.Builder builder = new AlertDialog.Builder(context);
         builder.setTitle("Confirmación de reenvío")
                 .setMessage("¿Estás seguro de reenviar este mensaje?")
@@ -75,6 +80,9 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHold
                         // Aquí puedes implementar el código para enviar el mensaje al servidor
                         // Puedes llamar a un método en MainActivity para manejar el envío
                         //sendToServer(message);
+
+                        client.send(String.format("{\"type\":\"show\", \"value\": \"%s\"}",message));
+
                     }
                 })
                 .setNegativeButton("No", new DialogInterface.OnClickListener() {

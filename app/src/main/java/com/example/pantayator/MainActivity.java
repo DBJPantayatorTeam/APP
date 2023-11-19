@@ -27,8 +27,11 @@ public class MainActivity extends AppCompatActivity {
     private Button sendButton;
     private Button connectButton;
     private WebSocketClient client;
+    WebSocketManager webSocketManager = WebSocketManager.getInstance(); //getWebSocketClient
     static ArrayList<String> messageHistory = new ArrayList<String>();
     private Button historyButton;
+    private Button imageButton;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,7 +49,9 @@ public class MainActivity extends AppCompatActivity {
                     String ip = String.valueOf(ipET.getText());
                     connectToRPI(ip);
                 } else {
-                    client.close();
+                    //client.close();
+                    webSocketManager.getWebSocketClient().close();
+                    webSocketManager.deleteWebSocketClient();
                 }
 
             }
@@ -79,6 +84,25 @@ public class MainActivity extends AppCompatActivity {
                 goToMessageHistory();
             }
         });
+
+        imageButton = findViewById(R.id.imageButton);
+        imageButton.setVisibility(View.INVISIBLE);
+        imageButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                goToSendImage();
+            }
+        });
+
+        if (webSocketManager.getWebSocketClient() != null) {
+            client = webSocketManager.getWebSocketClient();
+            connectButton.setBackgroundTintList(getColorStateList(R.color.colorRojo));
+            connectButton.setText("DESCONNECTAR");
+            sendButton.setBackgroundTintList(getColorStateList(R.color.colorVerde));
+            historyButton.setVisibility(View.VISIBLE);
+            imageButton.setVisibility(View.VISIBLE);
+            Toast.makeText(MainActivity.this, "S'ha establert la connexió", Toast.LENGTH_SHORT).show();
+        };
     }
 
     private void addMessageToHistory(String msg){
@@ -111,6 +135,7 @@ public class MainActivity extends AppCompatActivity {
                             connectButton.setText("DESCONNECTAR");
                             sendButton.setBackgroundTintList(getColorStateList(R.color.colorVerde));
                             historyButton.setVisibility(View.VISIBLE);
+                            imageButton.setVisibility(View.VISIBLE);
                             Toast.makeText(MainActivity.this, "S'ha establert la connexió", Toast.LENGTH_SHORT).show();
                         }
                     });
@@ -132,6 +157,7 @@ public class MainActivity extends AppCompatActivity {
                             connectButton.setText("CONNECTAR");
                             sendButton.setBackgroundColor(Color.RED);
                             historyButton.setVisibility(View.INVISIBLE);
+                            imageButton.setVisibility(View.INVISIBLE);
                             Toast.makeText(MainActivity.this, "S'ha desconnectat", Toast.LENGTH_SHORT).show();
                         }
                     });
@@ -142,7 +168,7 @@ public class MainActivity extends AppCompatActivity {
                     ex.printStackTrace();
                 }
             };
-
+            WebSocketManager.getInstance().setWebSocketClient(client);
             client.connect();
 
         } catch (URISyntaxException e) {
@@ -157,7 +183,13 @@ public class MainActivity extends AppCompatActivity {
         startActivity(goMH);
     }
 
+    private void goToSendImage(){
+        Intent goSI = new Intent(getApplicationContext(), ActivitySendImage.class);
+        startActivity(goSI);
+    }
+
     private boolean isConnected() {
-        return client != null && client.getConnection().isOpen();
+        //return client != null && client.getConnection().isOpen();
+        return webSocketManager.getWebSocketClient() != null && webSocketManager.getWebSocketClient().getConnection().isOpen();
     }
 }
