@@ -16,7 +16,7 @@ import java.io.ByteArrayOutputStream;
 public class ImageAdapter extends BaseAdapter {
 
     private Context mContext;
-    private int[] mImageIds;  // Agrega tus recursos de imágenes aquí
+    private int[] mImageIds;
 
     WebSocketClient client = WebSocketManager.getInstance().getWebSocketClient();
 
@@ -73,7 +73,6 @@ public class ImageAdapter extends BaseAdapter {
                 client.send(String.format("{\"type\":\"image\", \"value\": \"%s\"}", encodedImage));
             }
         });
-
         return imageView;
     }
 }

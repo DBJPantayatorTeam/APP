@@ -26,12 +26,10 @@ public class LoginActivity extends AppCompatActivity {
     private EditText passwordEditText;
     private WebSocketClient client;
     private Button loginButton;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
-        connectToRPI();
 
         final EditText pswET = findViewById(R.id.passwordEditText);
         final EditText usrET = findViewById(R.id.userEditText);
@@ -40,6 +38,13 @@ public class LoginActivity extends AppCompatActivity {
         loginButton.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View view) {
+                connectToRPI();
+
+                try {
+                    Thread.sleep(1000);
+                }catch (Exception e){
+                    e.printStackTrace();
+                }
                 if (!isConnected()){
                     return;
                 }
@@ -48,13 +53,14 @@ public class LoginActivity extends AppCompatActivity {
                 String username = usrET.getText().toString();
 
                 client.send(String.format("{\"type\":\"login\", \"user\": \"%s\", \"password\": \"%s\"}", username, password));
+                client.send("{\"type\":\"connection\", \"version\": \"app\"}");
             }
         });
     }
 
     public void connectToRPI() {
         int port = 8888;
-        String ip = "192.168.1.112";
+        String ip = "192.168.0.20";
         String uri = "ws://" + ip + ":" + port;
 
         try {
@@ -119,6 +125,7 @@ public class LoginActivity extends AppCompatActivity {
                         Toast.makeText(LoginActivity.this, "Usuari o contrasenya incorrecte", Toast.LENGTH_SHORT).show();
                     }
                 });
+                client.close();
             }
         } catch (JSONException e) {
             e.printStackTrace();

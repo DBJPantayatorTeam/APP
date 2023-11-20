@@ -16,7 +16,6 @@ public class ActivitySendImage extends AppCompatActivity {
 
         backButton = findViewById(R.id.backButton);
         backButton.setOnClickListener(new View.OnClickListener(){
-
             @Override
             public void onClick(View view) {
                 goToMain();
@@ -28,7 +27,13 @@ public class ActivitySendImage extends AppCompatActivity {
                 R.drawable.stalker,
                 R.drawable.stalker,
                 R.drawable.stalker1,
-                R.drawable.stalker1};
+                R.drawable.stalker1,
+                R.drawable.stalker,
+                R.drawable.stalker1,
+                R.drawable.stalker,
+                R.drawable.stalker1,
+                R.drawable.stalker
+        };
 
         // Configurar el adaptador con el array de imágenes
         ImageAdapter adapter = new ImageAdapter(this, imageIds);
