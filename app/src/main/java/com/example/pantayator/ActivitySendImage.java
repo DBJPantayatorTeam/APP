@@ -34,7 +34,9 @@ public class ActivitySendImage extends AppCompatActivity {
                 R.drawable.wi,
                 R.drawable.windows,
                 R.drawable.chihuahua,
-                R.drawable.gato
+                R.drawable.gato,
+                R.drawable.buscaminas,
+                R.drawable.ajedrez
         };
 
         // Configurar el adaptador con el array de imágenes
