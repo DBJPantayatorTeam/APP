@@ -24,15 +24,17 @@ public class ActivitySendImage extends AppCompatActivity {
 
         // Agrega tus recursos de imágenes al array
         int[] imageIds = {R.drawable.stalker,
-                R.drawable.stalker,
-                R.drawable.stalker,
-                R.drawable.stalker1,
                 R.drawable.stalker1,
                 R.drawable.stalker,
-                R.drawable.stalker1,
-                R.drawable.stalker,
-                R.drawable.stalker1,
-                R.drawable.stalker
+                R.drawable.tiboli,
+                R.drawable.panel,
+                R.drawable.sonichu,
+                R.drawable.rasp,
+                R.drawable.minion,
+                R.drawable.wi,
+                R.drawable.windows,
+                R.drawable.chihuahua,
+                R.drawable.gato
         };
 
         // Configurar el adaptador con el array de imágenes

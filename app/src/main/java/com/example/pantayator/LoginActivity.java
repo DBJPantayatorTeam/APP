@@ -117,6 +117,7 @@ public class LoginActivity extends AppCompatActivity {
         try {
             boolean loginValue = json.getBoolean("value");
             if (loginValue) {
+                client.close();
                 goToMain();
             } else {
                 runOnUiThread(new Runnable() {
