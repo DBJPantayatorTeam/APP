@@ -5,6 +5,7 @@ import org.java_websocket.client.WebSocketClient;
 public class WebSocketManager {
     private static WebSocketManager instance;
     private WebSocketClient webSocketClient;
+    public static String ip;
 
     private WebSocketManager() {
     }

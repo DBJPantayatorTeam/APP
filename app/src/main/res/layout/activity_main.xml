@@ -6,49 +6,13 @@
     android:layout_height="match_parent"
     tools:context=".MainActivity">
 
-    <Button
-        android:id="@+id/logoutButton"
-        android:layout_width="54dp"
-        android:layout_height="54dp"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="16dp"
-        android:backgroundTint="#00FFFFFF"
-        android:paddingLeft="10dp"
-        android:paddingTop="0dp"
-        android:paddingRight="0dp"
-        android:paddingBottom="0dp"
-        app:icon="@android:drawable/ic_menu_close_clear_cancel"
-        app:iconPadding="0dp"
-        app:iconSize="55dp"
-        app:iconTint="#007BFF"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        tools:visibility="visible" />
 
-    <Button
-        android:id="@+id/imageButton"
-        android:layout_width="54dp"
-        android:layout_height="54dp"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="16dp"
-        android:backgroundTint="#00FFFFFF"
-        android:paddingLeft="10dp"
-        android:paddingTop="0dp"
-        android:paddingRight="0dp"
-        android:paddingBottom="0dp"
-        app:icon="@android:drawable/ic_menu_gallery"
-        app:iconPadding="0dp"
-        app:iconSize="35dp"
-        app:iconTint="#007BFF"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        tools:visibility="invisible" />
 
     <TextView
         android:id="@+id/usuariLogintextView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="125dp"
+        android:layout_marginTop="244dp"
         android:text="Missatge"
         android:textSize="28sp"
         android:textStyle="bold"
@@ -56,75 +20,64 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <TextView
-        android:id="@+id/passwordTextView2"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="32dp"
-        android:text="Conexió IP"
-        android:textSize="28sp"
-        android:textStyle="bold"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/missatgeEditText" />
-
     <EditText
         android:id="@+id/missatgeEditText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
+        android:layout_marginTop="32dp"
         android:ems="10"
         android:hint="¡Hello World!"
         android:inputType="text"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.502"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/usuariLogintextView" />
 
-    <EditText
-        android:id="@+id/ipEditText"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:ems="10"
-        android:hint="192.168.0.2X"
-        android:inputType="text"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.497"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/passwordTextView2" />
-
-    <Button
-        android:id="@+id/connectarButton"
-        android:layout_width="168dp"
-        android:layout_height="63dp"
-        android:layout_marginTop="56dp"
-        android:backgroundTint="#007BFF"
-        android:text="CONNECTAR"
-        android:textSize="20sp"
-        android:textStyle="bold"
-        app:layout_constraintEnd_toStartOf="@+id/enviarButton"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/ipEditText" />
-
     <Button
         android:id="@+id/enviarButton"
-        android:layout_width="168dp"
-        android:layout_height="63dp"
-        android:layout_marginTop="56dp"
-        android:backgroundTint="#FF0000"
-        android:text="ENVIAR"
+        android:layout_width="76dp"
+        android:layout_height="76dp"
+        android:backgroundTint="#4CD964"
+        android:paddingLeft="20dp"
         android:textSize="20sp"
         android:textStyle="bold"
+        app:cornerRadius="35px"
+        app:icon="@android:drawable/stat_notify_chat"
+        app:iconSize="35dp"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/connectarButton"
-        app:layout_constraintTop_toBottomOf="@+id/ipEditText" />
+        app:layout_constraintHorizontal_bias="0.334"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/missatgeEditText"
+        app:layout_constraintVertical_bias="0.179" />
+
+    <Button
+        android:id="@+id/imageButton"
+        android:layout_width="76dp"
+        android:layout_height="76dp"
+        android:backgroundTint="#4CD964"
+        android:paddingLeft="20dp"
+        android:paddingTop="0dp"
+        android:paddingRight="0dp"
+        android:paddingBottom="0dp"
+        app:cornerRadius="35px"
+        app:icon="@drawable/gallery"
+        app:iconPadding="0dp"
+        app:iconSize="35dp"
+        app:iconTint="#FFFFFF"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.278"
+        app:layout_constraintStart_toEndOf="@+id/enviarButton"
+        app:layout_constraintTop_toBottomOf="@+id/missatgeEditText"
+        app:layout_constraintVertical_bias="0.179"
+        tools:visibility="visible" />
 
     <Button
         android:id="@+id/historialButton"
         android:layout_width="54dp"
         android:layout_height="54dp"
-        android:layout_marginTop="16dp"
-        android:layout_marginEnd="16dp"
+        android:layout_marginTop="72dp"
         android:backgroundTint="#00FFFFFF"
         android:paddingLeft="10dp"
         android:paddingTop="0dp"
@@ -135,7 +88,29 @@
         app:iconSize="35dp"
         app:iconTint="#007BFF"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.904"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        tools:visibility="invisible" />
+        tools:visibility="visible" />
+
+    <Button
+        android:id="@+id/logoutButton"
+        android:layout_width="54dp"
+        android:layout_height="54dp"
+        android:layout_marginTop="72dp"
+        android:backgroundTint="#00FFFFFF"
+        android:paddingLeft="10dp"
+        android:paddingTop="0dp"
+        android:paddingRight="0dp"
+        android:paddingBottom="0dp"
+        app:icon="@android:drawable/ic_menu_close_clear_cancel"
+        app:iconPadding="0dp"
+        app:iconSize="55dp"
+        app:iconTint="#007BFF"
+        app:layout_constraintEnd_toStartOf="@+id/historialButton"
+        app:layout_constraintHorizontal_bias="0.148"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:visibility="visible" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -23,45 +23,24 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 public class MainActivity extends AppCompatActivity {
-
     private Button sendButton;
-    private Button connectButton;
     private WebSocketClient client;
     WebSocketManager webSocketManager = WebSocketManager.getInstance(); //getWebSocketClient
     static ArrayList<String> messageHistory = new ArrayList<String>();
     private Button historyButton;
     private Button imageButton;
-
     private Button logoutButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        if (!isConnected()) {
+            connectToRPI(webSocketManager.ip);
+        }
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
         final EditText msgET = findViewById(R.id.missatgeEditText);
-        final EditText ipET = findViewById(R.id.ipEditText);
-
-        connectButton = findViewById(R.id.connectarButton);
-        connectButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (!isConnected()) {
-                    String ip = String.valueOf(ipET.getText());
-                    connectToRPI(ip);
-                } else {
-                    webSocketManager.getWebSocketClient().close();
-                    webSocketManager.deleteWebSocketClient();
-
-                    connectButton.setBackgroundTintList(getColorStateList(R.color.colorAzul));
-                    connectButton.setText("CONNECTAR");
-                    sendButton.setBackgroundTintList(getColorStateList(R.color.colorRojo));
-                    historyButton.setVisibility(View.INVISIBLE);
-                    imageButton.setVisibility(View.INVISIBLE);
-                    logoutButton.setVisibility(View.VISIBLE);
-                }
-            }
-        });
 
         sendButton = findViewById(R.id.enviarButton);
         sendButton.setOnClickListener(new View.OnClickListener() {
@@ -83,7 +62,6 @@ public class MainActivity extends AppCompatActivity {
         });
 
         historyButton = findViewById(R.id.historialButton);
-        historyButton.setVisibility(View.INVISIBLE);
         historyButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -92,7 +70,6 @@ public class MainActivity extends AppCompatActivity {
         });
 
         imageButton = findViewById(R.id.imageButton);
-        imageButton.setVisibility(View.INVISIBLE);
         imageButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -110,12 +87,9 @@ public class MainActivity extends AppCompatActivity {
         });
 
         if (webSocketManager.getWebSocketClient() != null) {
-            connectButton.setBackgroundTintList(getColorStateList(R.color.colorRojo));
-            connectButton.setText("DESCONNECTAR");
             sendButton.setBackgroundTintList(getColorStateList(R.color.colorVerde));
             historyButton.setVisibility(View.VISIBLE);
             imageButton.setVisibility(View.VISIBLE);
-            logoutButton.setVisibility(View.INVISIBLE);
         }
     }
 
@@ -145,12 +119,9 @@ public class MainActivity extends AppCompatActivity {
                     runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
-                            connectButton.setBackgroundTintList(getColorStateList(R.color.colorRojo));
-                            connectButton.setText("DESCONNECTAR");
                             sendButton.setBackgroundTintList(getColorStateList(R.color.colorVerde));
                             historyButton.setVisibility(View.VISIBLE);
                             imageButton.setVisibility(View.VISIBLE);
-                            logoutButton.setVisibility(View.INVISIBLE);
                             Toast.makeText(MainActivity.this, "S'ha establert la connexió", Toast.LENGTH_SHORT).show();
                         }
                     });
@@ -168,8 +139,6 @@ public class MainActivity extends AppCompatActivity {
                     runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
-                            connectButton.setBackgroundTintList(getColorStateList(R.color.colorAzul));
-                            connectButton.setText("CONNECTAR");
                             sendButton.setBackgroundTintList(getColorStateList(R.color.colorRojo));
                             historyButton.setVisibility(View.INVISIBLE);
                             imageButton.setVisibility(View.INVISIBLE);
