@@ -23,7 +23,8 @@ public class ActivitySendImage extends AppCompatActivity {
         });
 
         // Agrega tus recursos de imágenes al array
-        int[] imageIds = {R.drawable.stalker,
+        int[] imageIds = {
+                R.drawable.stalker,
                 R.drawable.stalker1,
                 R.drawable.stalker,
                 R.drawable.tiboli,

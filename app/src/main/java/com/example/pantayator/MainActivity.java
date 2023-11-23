@@ -117,17 +117,6 @@ public class MainActivity extends AppCompatActivity {
             imageButton.setVisibility(View.VISIBLE);
             logoutButton.setVisibility(View.INVISIBLE);
         }
-
-        /*
-        if (webSocketManager.getWebSocketClient() == null) {
-            connectButton.setBackgroundTintList(getColorStateList(R.color.colorAzul));
-            connectButton.setText("CONNECTAR");
-            sendButton.setBackgroundTintList(getColorStateList(R.color.colorRojo));
-            historyButton.setVisibility(View.INVISIBLE);
-            imageButton.setVisibility(View.INVISIBLE);
-            logoutButton.setVisibility(View.VISIBLE);
-        };
-         */
     }
 
     private void addMessageToHistory(String msg){

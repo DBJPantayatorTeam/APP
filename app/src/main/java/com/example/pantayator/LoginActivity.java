@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -22,45 +23,74 @@ import java.net.URI;
 import java.net.URISyntaxException;
 
 public class LoginActivity extends AppCompatActivity {
+    private WebSocketClient client;
+
+    // Login
+    private TextView usuariLogintextView;
+    private TextView passwordTextView2;
     private EditText userEditText;
     private EditText passwordEditText;
-    private WebSocketClient client;
     private Button loginButton;
+
+    // Connect
+    private Button connectarLoginButton;
+    private TextView ipLoginTextView;
+    private EditText ipLoginEditText;
+
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
-        final EditText pswET = findViewById(R.id.passwordEditText);
-        final EditText usrET = findViewById(R.id.userEditText);
+        usuariLogintextView = findViewById(R.id.usuariLogintextView);
+        passwordTextView2 = findViewById(R.id.passwordTextView2);
+        userEditText = findViewById(R.id.userEditText);
+        passwordEditText = findViewById(R.id.passwordEditText);
+        loginButton = findViewById(R.id.loginButton);
+        connectarLoginButton = findViewById(R.id.connectarLoginButton);
+        ipLoginTextView = findViewById(R.id.ipLoginTextView);
+        ipLoginEditText = findViewById(R.id.ipLoginEditText);
 
         loginButton = findViewById(R.id.loginButton);
         loginButton.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View view) {
-                connectToRPI();
-
-                try {
-                    Thread.sleep(1000);
-                }catch (Exception e){
-                    e.printStackTrace();
+                String password = passwordEditText.getText().toString();
+                String username = userEditText.getText().toString();
+                if (isConnected()){
+                    client.send(String.format("{\"type\":\"login\", \"user\": \"%s\", \"password\": \"%s\"}", username, password));
+                }else{
+                    Toast.makeText(LoginActivity.this, "No estás conectado", Toast.LENGTH_SHORT).show();
                 }
-                if (!isConnected()){
-                    return;
-                }
-
-                String password = pswET.getText().toString();
-                String username = usrET.getText().toString();
-
-                client.send(String.format("{\"type\":\"login\", \"user\": \"%s\", \"password\": \"%s\"}", username, password));
-                client.send("{\"type\":\"connection\", \"version\": \"app\"}");
             }
         });
+        connectarLoginButton = findViewById(R.id.connectarLoginButton);
+        connectarLoginButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                String ip = ipLoginEditText.getText().toString();
+                connectToRPI(ip);
+
+                try {
+                    Thread.sleep(100);
+                } catch (InterruptedException e) {
+                    throw new RuntimeException(e);
+                }
+
+                if (isConnected()){
+                    conected();
+                }else{
+                    Toast.makeText(LoginActivity.this, "IP no existent", Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
+
     }
 
-    public void connectToRPI() {
+    public void connectToRPI(String ip) {
         int port = 8888;
-        String ip = "192.168.0.20";
         String uri = "ws://" + ip + ":" + port;
 
         try {
@@ -68,6 +98,7 @@ public class LoginActivity extends AppCompatActivity {
                 @Override
                 public void onOpen(ServerHandshake handshake) {
                     System.out.println("Connected to: " + getURI());
+                    client.send("{\"type\":\"connection\", \"version\": \"app\"}");
                 }
 
                 @Override
@@ -80,6 +111,7 @@ public class LoginActivity extends AppCompatActivity {
                         if (messageType.equalsIgnoreCase("login")){
                             handleLoginResponse(json);
                         }
+
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
@@ -95,7 +127,6 @@ public class LoginActivity extends AppCompatActivity {
                     ex.printStackTrace();
                 }
             };
-
             client.connect();
 
         } catch (URISyntaxException e) {
@@ -109,15 +140,11 @@ public class LoginActivity extends AppCompatActivity {
         Intent goMH = new Intent(getApplicationContext(), MainActivity.class);
         startActivity(goMH);
     }
-    private boolean isConnected() {
-        return client != null && client.getConnection().isOpen();
-    }
 
     private void handleLoginResponse(JSONObject json) {
         try {
             boolean loginValue = json.getBoolean("value");
             if (loginValue) {
-                client.close();
                 goToMain();
             } else {
                 runOnUiThread(new Runnable() {
@@ -126,10 +153,41 @@ public class LoginActivity extends AppCompatActivity {
                         Toast.makeText(LoginActivity.this, "Usuari o contrasenya incorrecte", Toast.LENGTH_SHORT).show();
                     }
                 });
-                client.close();
             }
         } catch (JSONException e) {
             e.printStackTrace();
         }
+    }
+
+    private void conected(){
+        connectarLoginButton.setVisibility(View.INVISIBLE);
+        ipLoginTextView.setVisibility(View.INVISIBLE);
+        ipLoginEditText.setVisibility(View.INVISIBLE);
+
+        //Login
+        loginButton.setVisibility(View.VISIBLE);
+        usuariLogintextView.setVisibility(View.VISIBLE);
+        passwordTextView2.setVisibility(View.VISIBLE);
+        passwordEditText.setVisibility(View.VISIBLE);
+        userEditText.setVisibility(View.VISIBLE);
+        loginButton.setVisibility(View.VISIBLE);
+    }
+
+    private void desconected(){
+        connectarLoginButton.setVisibility(View.VISIBLE);
+        ipLoginTextView.setVisibility(View.VISIBLE);
+        ipLoginEditText.setVisibility(View.VISIBLE);
+
+        //Login
+        loginButton.setVisibility(View.INVISIBLE);
+        usuariLogintextView.setVisibility(View.INVISIBLE);
+        passwordTextView2.setVisibility(View.INVISIBLE);
+        passwordEditText.setVisibility(View.INVISIBLE);
+        userEditText.setVisibility(View.INVISIBLE);
+        loginButton.setVisibility(View.INVISIBLE);
+    }
+
+    private boolean isConnected() {
+        return client != null && client.getConnection().isOpen();
     }
 }
