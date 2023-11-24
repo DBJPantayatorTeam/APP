@@ -2,6 +2,8 @@ package com.example.pantayator;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -10,9 +12,12 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.google.android.material.appbar.MaterialToolbar;
+
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
+import java.util.List;
 
 import org.java_websocket.client.WebSocketClient;
 import org.java_websocket.drafts.Draft;
@@ -23,18 +28,20 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 public class MainActivity extends AppCompatActivity {
-    private Button sendButton;
+    private Button sendButton, historyButton, imageButton, logoutButton;
+    private Button peopleButton;
     private WebSocketClient client;
     WebSocketManager webSocketManager = WebSocketManager.getInstance(); //getWebSocketClient
     static ArrayList<String> messageHistory = new ArrayList<String>();
-    private Button historyButton;
-    private Button imageButton;
-    private Button logoutButton;
+    private MaterialToolbar toolbar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
+
         if (!isConnected()) {
             connectToRPI(webSocketManager.ip);
+            client = webSocketManager.getWebSocketClient();
         }
 
         super.onCreate(savedInstanceState);
@@ -86,11 +93,21 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        peopleButton = findViewById(R.id.peopleButton);
+        peopleButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                client.send("{\"type\":\"userList\"}");
+            }
+        });
+
         if (webSocketManager.getWebSocketClient() != null) {
             sendButton.setBackgroundTintList(getColorStateList(R.color.colorVerde));
             historyButton.setVisibility(View.VISIBLE);
             imageButton.setVisibility(View.VISIBLE);
         }
+
+
     }
 
     private void addMessageToHistory(String msg){
@@ -130,7 +147,8 @@ public class MainActivity extends AppCompatActivity {
 
                 @Override
                 public void onMessage(String message) {
-                    System.out.println("Message: " + message);
+
+
                 }
 
                 @Override
@@ -146,6 +164,7 @@ public class MainActivity extends AppCompatActivity {
                             Toast.makeText(MainActivity.this, "S'ha desconnectat", Toast.LENGTH_SHORT).show();
                         }
                     });
+                    goToLogin();
                 }
 
                 @Override
@@ -181,5 +200,31 @@ public class MainActivity extends AppCompatActivity {
     private boolean isConnected() {
         //return client != null && client.getConnection().isOpen();
         return webSocketManager.getWebSocketClient() != null && webSocketManager.getWebSocketClient().getConnection().isOpen();
+    }
+
+        //Per quan rebi missatge
+    private void crearLista(List<String> stringList){
+        runOnUiThread(new Runnable() {
+
+            @Override
+            public void run() {
+                // Convertir la lista de strings a una matriz de strings
+                String[] items = stringList.toArray(new String[0]);
+
+                // Crear el AlertDialog informativo
+                AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
+                builder.setTitle("Lista de Elementos")
+                        .setItems(items, null)
+                        .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                // Código a ejecutar al hacer clic en OK
+                                dialog.dismiss();
+                            }
+                        })
+                        .setCancelable(false) // Evitar que se cierre al hacer clic fuera del diálogo
+                        .show();
+            }
+        });
     }
 }
