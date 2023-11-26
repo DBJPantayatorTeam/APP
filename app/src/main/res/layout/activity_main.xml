@@ -6,13 +6,36 @@
     android:layout_height="match_parent"
     tools:context=".MainActivity">
 
-    <com.google.android.material.appbar.MaterialToolbar
+    <androidx.appcompat.widget.Toolbar
         android:id="@+id/toolbar"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="?attr/colorPrimary"
-        android:minHeight="?attr/actionBarSize"
-        android:theme="?attr/actionBarTheme" />
+        android:layout_height="?actionBarSize"
+        android:background="#C081FF"
+        android:titleTextColor="#FFFFFF"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="right">
+
+            <Button
+                android:id="@+id/peopleButton"
+                android:layout_width="47dp"
+                android:layout_height="46dp"
+                android:backgroundTint="#00BD6464"
+                android:paddingLeft="6dp"
+                android:paddingTop="0dp"
+                android:paddingRight="0dp"
+                android:paddingBottom="0dp"
+                app:icon="@drawable/comunity"
+                app:iconSize="35dp"
+                tools:layout_editor_absoluteX="64dp"
+                tools:layout_editor_absoluteY="140dp" />
+        </LinearLayout>
+    </androidx.appcompat.widget.Toolbar>
 
     <TextView
         android:id="@+id/usuariLogintextView"
@@ -119,18 +142,7 @@
         app:layout_constraintTop_toTopOf="parent"
         tools:visibility="visible" />
 
-    <Button
-        android:id="@+id/peopleButton"
-        android:layout_width="47dp"
-        android:layout_height="46dp"
-        android:backgroundTint="#00BD6464"
-        android:paddingLeft="6dp"
-        android:paddingTop="0dp"
-        android:paddingRight="0dp"
-        android:paddingBottom="0dp"
-        app:icon="@drawable/comunity"
-        app:iconSize="35dp"
-        tools:layout_editor_absoluteY="10dp" />
+
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

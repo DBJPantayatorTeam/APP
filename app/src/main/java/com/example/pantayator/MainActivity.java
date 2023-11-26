@@ -17,13 +17,16 @@ import com.google.android.material.appbar.MaterialToolbar;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 import org.java_websocket.client.WebSocketClient;
 import org.java_websocket.drafts.Draft;
 import org.java_websocket.drafts.Draft_6455;
 import org.java_websocket.handshake.ServerHandshake;
 import org.java_websocket.exceptions.WebsocketNotConnectedException;
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -97,7 +100,7 @@ public class MainActivity extends AppCompatActivity {
         peopleButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                client.send("{\"type\":\"userList\"}");
+                client.send("{\"type\":\"usersList\"}");
             }
         });
 
@@ -147,7 +150,49 @@ public class MainActivity extends AppCompatActivity {
 
                 @Override
                 public void onMessage(String message) {
+                    try {
+                        JSONObject msn = new JSONObject(message);
+                        String type = msn.getString("type");
 
+                        if (type.equals("usersOnline")) {
+                            JSONArray usersArray = msn.getJSONArray("value");
+
+                            List<String> userList = new ArrayList<>();
+
+                            for (int i = 0; i < usersArray.length(); i++) {
+                                JSONObject userObject = usersArray.getJSONObject(i);
+                                Iterator<String> keys = userObject.keys();
+
+                                while (keys.hasNext()) {
+                                    String key = keys.next();
+                                    JSONObject user = userObject.getJSONObject(key);
+
+                                    String platform = user.getString("plataforma");
+                                    String name = user.getString("usuario");
+
+                                    userList.add("- " + name + " (" + platform + ")");
+                                }
+                            }
+
+                            makeUsersDialog(userList);
+                        }
+                        if (type.equals("disconnection")) {
+                            int numConnections = msn.getInt("value");
+                            showToast("S'ha desconectat un usuari. Total de conexions: "+numConnections);
+                        }
+                        if (type.equals("connection")) {
+                            int numConnections = msn.getInt("value");
+                            showToast("S'ha conectat un usuari. Total de conexions: "+ numConnections);
+                        }
+                        if (type.equals("sendMessage")) {
+                            String userName = msn.getString("value");
+                            showToast("L'usuari "+ userName +" ha mandat un missatge");
+                        }
+
+
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
 
                 }
 
@@ -202,27 +247,32 @@ public class MainActivity extends AppCompatActivity {
         return webSocketManager.getWebSocketClient() != null && webSocketManager.getWebSocketClient().getConnection().isOpen();
     }
 
+    private void showToast(String message) {
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                Toast.makeText(MainActivity.this, message, Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
         //Per quan rebi missatge
-    private void crearLista(List<String> stringList){
+    private void makeUsersDialog(List<String> stringList){
         runOnUiThread(new Runnable() {
 
             @Override
             public void run() {
-                // Convertir la lista de strings a una matriz de strings
                 String[] items = stringList.toArray(new String[0]);
 
-                // Crear el AlertDialog informativo
                 AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
-                builder.setTitle("Lista de Elementos")
+                builder.setTitle("Usuaris Conectats")
                         .setItems(items, null)
                         .setPositiveButton("OK", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
-                                // Código a ejecutar al hacer clic en OK
                                 dialog.dismiss();
                             }
                         })
-                        .setCancelable(false) // Evitar que se cierre al hacer clic fuera del diálogo
                         .show();
             }
         });
