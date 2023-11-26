@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.res.ColorStateList;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.view.View;
@@ -93,6 +94,8 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 goToLogin();
+                client.close();
+                webSocketManager.deleteWebSocketClient();
             }
         });
 
@@ -105,7 +108,9 @@ public class MainActivity extends AppCompatActivity {
         });
 
         if (webSocketManager.getWebSocketClient() != null) {
-            sendButton.setBackgroundTintList(getColorStateList(R.color.colorVerde));
+            int color = Color.parseColor("#4CD964");
+            ColorStateList colorStateList = ColorStateList.valueOf(color);
+            sendButton.setBackgroundTintList(colorStateList);
             historyButton.setVisibility(View.VISIBLE);
             imageButton.setVisibility(View.VISIBLE);
         }
@@ -139,7 +144,9 @@ public class MainActivity extends AppCompatActivity {
                     runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
-                            sendButton.setBackgroundTintList(getColorStateList(R.color.colorVerde));
+                            int color = Color.parseColor("#4CD964");
+                            ColorStateList colorStateList = ColorStateList.valueOf(color);
+                            sendButton.setBackgroundTintList(colorStateList);
                             historyButton.setVisibility(View.VISIBLE);
                             imageButton.setVisibility(View.VISIBLE);
                             Toast.makeText(MainActivity.this, "S'ha establert la connexió", Toast.LENGTH_SHORT).show();

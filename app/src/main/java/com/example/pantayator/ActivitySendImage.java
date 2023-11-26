@@ -48,7 +48,6 @@ public class ActivitySendImage extends AppCompatActivity {
         gridView.setAdapter(adapter);
     }
     private void goToMain() {
-        Intent goBack = new Intent(getApplicationContext(), MainActivity.class);
-        startActivity(goBack);
+        finish();
     }
 }

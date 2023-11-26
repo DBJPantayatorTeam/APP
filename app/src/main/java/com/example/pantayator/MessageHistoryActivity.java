@@ -85,7 +85,6 @@ public class MessageHistoryActivity extends AppCompatActivity {
     }
 
     private void goToMain() {
-        Intent goBack = new Intent(getApplicationContext(), MainActivity.class);
-        startActivity(goBack);
+        finish();
     }
 }
