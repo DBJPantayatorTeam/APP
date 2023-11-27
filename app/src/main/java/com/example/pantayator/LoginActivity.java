@@ -36,6 +36,7 @@ public class LoginActivity extends AppCompatActivity {
     private Button connectarLoginButton;
     private TextView ipLoginTextView;
     private EditText ipLoginEditText;
+    public static String userName = "";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,6 +57,7 @@ public class LoginActivity extends AppCompatActivity {
             public void onClick(View view) {
                 String password = passwordEditText.getText().toString();
                 String username = userEditText.getText().toString();
+                userName = userEditText.getText().toString();
                 if (isConnected()){
                     client.send(String.format("{\"type\":\"login\", \"user\": \"%s\", \"password\": \"%s\"}", username, password));
                 } else {

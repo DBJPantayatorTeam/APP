@@ -63,7 +63,7 @@ public class MainActivity extends AppCompatActivity {
 
                 String message = msgET.getText().toString();
                 try {
-                    webSocketManager.getWebSocketClient().send(String.format("{\"type\":\"show\", \"value\": \"%s\"}",message));
+                    webSocketManager.getWebSocketClient().send(String.format("{\"type\":\"show\", \"value\": \"%s\", \"user\": \"%s\"}",message, LoginActivity.userName));
                     addMessageToHistory(message);
                 } catch (WebsocketNotConnectedException e) {
                     e.printStackTrace();
