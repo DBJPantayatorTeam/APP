@@ -60,6 +60,8 @@ public class LoginActivity extends AppCompatActivity {
                 userName = userEditText.getText().toString();
                 if (isConnected()){
                     client.send(String.format("{\"type\":\"login\", \"user\": \"%s\", \"password\": \"%s\"}", username, password));
+                    WebSocketManager.userName = userEditText.getText().toString();
+                    WebSocketManager.passwd = passwordEditText.getText().toString();
                 } else {
                     Toast.makeText(LoginActivity.this, "No estás conectat", Toast.LENGTH_SHORT).show();
                 }

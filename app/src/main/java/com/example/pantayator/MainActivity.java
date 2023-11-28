@@ -153,6 +153,7 @@ public class MainActivity extends AppCompatActivity {
                         }
                     });
                     client.send("{\"type\":\"connection\", \"version\": \"app\"}");
+                    client.send(String.format("{\"type\":\"login\", \"user\": \"%s\", \"password\": \"%s\"}", WebSocketManager.userName, WebSocketManager.passwd));
                 }
 
                 @Override

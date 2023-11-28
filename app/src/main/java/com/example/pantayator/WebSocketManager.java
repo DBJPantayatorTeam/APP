@@ -6,6 +6,8 @@ public class WebSocketManager {
     private static WebSocketManager instance;
     private WebSocketClient webSocketClient;
     public static String ip;
+    public static String userName;
+    public static String passwd;
 
     private WebSocketManager() {
     }
